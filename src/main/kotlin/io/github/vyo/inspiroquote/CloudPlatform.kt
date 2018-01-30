@@ -4,6 +4,8 @@ import com.mashape.unirest.http.Unirest
 import io.github.vyo.twig.logger.Logger
 
 /**
+ * Extracts text from a given base64 image string via the Google Cloud Vision API
+ *
  * Created by Manuel Weidmann <manuel.weidmann@7p-group.com> on 30.01.18.
  */
 

@@ -4,6 +4,8 @@ import io.github.vyo.twig.logger.Logger
 import spark.Spark.port
 
 /**
+ * InspiroQuote RESTful-ish app to retrieve InspiroBot quotes as machine readable text.
+ *
  * Created by Manuel Weidmann <manuel.weidmann@7p-group.com> on 30.01.18.
  */
 
@@ -25,7 +27,7 @@ object App {
         val port = try {
             PORT.toInt()
         } catch (e: NumberFormatException) {
-            throw InitialisationException("failed to parse PORT env var: ${PORT}", e)
+            throw InitialisationException("failed to parse PORT env var: $PORT", e)
         }
 
         logger.info("starting on port $port")
