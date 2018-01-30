@@ -21,7 +21,7 @@ version '1.0.0'
 
 jar {
 
-    baseName = 'inspire'
+    baseName = 'inspiroquote'
     version = version
 
     manifest {
