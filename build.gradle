@@ -20,7 +20,7 @@ mainClassName = 'io.github.vyo.inspiroquote.App'
 jar {
 
     baseName = 'inspiroquote'
-    version = version
+    version = null
 
     manifest {
         attributes 'Main-Class': mainClassName
