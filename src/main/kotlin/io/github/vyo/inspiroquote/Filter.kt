@@ -1,7 +1,9 @@
 package io.github.vyo.inspiroquote
 
 import io.github.vyo.twig.logger.Logger
-import spark.Spark
+import spark.Filter
+import spark.Request
+import spark.Response
 import spark.Spark.*
 
 /**
@@ -12,16 +14,16 @@ import spark.Spark.*
 private val logger = Logger("filter")
 
 fun apiKeyFilter() {
-    before { request, _ ->
+    before(Filter({ request: Request, _: Response ->
         if (request.headers(App.INSPIROQUOTE_API_KEY_HEADER) != App.INSPIROQUOTE_API_KEY) {
-            Spark.halt(403, "forbidden")
+            halt(403, "forbidden")
         }
-    }
+    }))
 }
 
 fun loggingFilters() {
-    before { request, _ -> logger.debug("request", Pair("before", request)) }
-    after { _, response -> logger.debug("request", Pair("after", response)) }
+    before(Filter({ request: Request, _: Response -> logger.debug("request", Pair("before", request)) }))
+    after(Filter({ _: Request, response: Response -> logger.debug("request", Pair("after", response)) }))
 }
 
 fun exceptionFilter() {
