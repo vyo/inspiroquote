@@ -2,6 +2,7 @@ package io.github.vyo.inspiroquote
 
 import com.mashape.unirest.http.Unirest
 import io.github.vyo.twig.logger.Logger
+import spark.Spark.halt
 
 /**
  * Extracts text from a given base64 image string via the Google Cloud Vision API
@@ -24,8 +25,10 @@ data class CloudVisionDocumentTextResponse(val textAnnotations: List<CloudVision
 data class CloudVisionResponsePayload(val responses: List<CloudVisionDocumentTextResponse>)
 
 data class CloudVisionErrorResponse(val code: Int, val message: String)
+data class CloudTranslationErrorPayload(val code: Int, val message: String)
+data class CloudTranslationErrorResponse(val error: CloudTranslationErrorPayload)
 
-private val logger = Logger("cloudvision")
+private val logger = Logger("cloudplatform")
 
 fun extractText(base64Image: String, apiKey: String): String {
     val cloudPlatformPayload = toJSON(
@@ -47,7 +50,7 @@ fun extractText(base64Image: String, apiKey: String): String {
 
     val response = request.asString()
     val json = response.body
-    logger.debug(response)
+    logger.debug("cloud vision response", Pair("payload", response))
 
     return when (response.status) {
         200 -> fromJSON<CloudVisionResponsePayload>(json)
@@ -58,6 +61,41 @@ fun extractText(base64Image: String, apiKey: String): String {
                     Pair("status", error.code),
                     Pair("message", error.message))
             throw ServiceException(error.message)
+        }
+    }
+}
+
+data class CloudTranslationResponse(val translatedText: String)
+data class CloudTranslationResponseContainer(val translations: List<CloudTranslationResponse>)
+data class CloudTranslationResponsePayload(val data: CloudTranslationResponseContainer)
+
+fun translateText(text: String, language: String, apiKey: String): String {
+    val request = Unirest.post("https://translation.googleapis.com/language/translate/v2")
+            .queryString("q", text)
+            .queryString("source", "en")
+            .queryString("target", when (language) {
+                "de" -> "de"
+                else -> halt(400, "unsupported target language $language")
+            })
+            .queryString("format", "text")
+            .queryString("key", apiKey)
+            .httpRequest
+    logger.debug("cloud translation $request")
+
+
+    val response = request.asString()
+    val json = response.body
+    logger.debug("cloud translation response", Pair("payload", response))
+
+    return when (response.status) {
+        200 -> fromJSON<CloudTranslationResponsePayload>(json)
+                .data.translations[0].translatedText
+        else -> {
+            val error = fromJSON<CloudTranslationErrorResponse>(json)
+            logger.error("failed to translate text via Cloud Translation API",
+                    Pair("status", error.error.code),
+                    Pair("message", error.error.message))
+            throw ServiceException(error.error.message)
         }
     }
 }
