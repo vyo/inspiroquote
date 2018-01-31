@@ -25,8 +25,6 @@ data class CloudVisionDocumentTextResponse(val textAnnotations: List<CloudVision
 data class CloudVisionResponsePayload(val responses: List<CloudVisionDocumentTextResponse>)
 
 data class CloudVisionErrorResponse(val code: Int, val message: String)
-data class CloudTranslationErrorPayload(val code: Int, val message: String)
-data class CloudTranslationErrorResponse(val error: CloudTranslationErrorPayload)
 
 private val logger = Logger("cloudplatform")
 
@@ -69,12 +67,16 @@ data class CloudTranslationResponse(val translatedText: String)
 data class CloudTranslationResponseContainer(val translations: List<CloudTranslationResponse>)
 data class CloudTranslationResponsePayload(val data: CloudTranslationResponseContainer)
 
+data class CloudTranslationErrorPayload(val code: Int, val message: String)
+data class CloudTranslationErrorResponse(val error: CloudTranslationErrorPayload)
+
 fun translateText(text: String, language: String, apiKey: String): String {
     val request = Unirest.post("https://translation.googleapis.com/language/translate/v2")
             .queryString("q", text)
             .queryString("source", "en")
             .queryString("target", when (language) {
                 "de" -> "de"
+                "ja" -> "ja"
                 else -> halt(400, "unsupported target language $language")
             })
             .queryString("format", "text")
