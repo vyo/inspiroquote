@@ -12,11 +12,13 @@ import spark.Spark.port
 object App {
 
     private val PORT = System.getenv("PORT")
-            ?: throw InitialisationException("no PORT variable available")
+            ?: throw InitialisationException("no PORT variable defined")
     val INSPIROQUOTE_API_KEY = System.getenv("INSPIROQUOTE_API_KEY")
-            ?: throw InitialisationException("no InspiroQuote API key available")
+            ?: throw InitialisationException("no InspiroQuote API key defined")
+    val INSPIROQUOTE_ADMIN_TOKEN = System.getenv("INSPIROQUOTE_ADMIN_TOKEN")
+            ?: throw InitialisationException("no InspiroQuote admin token defined")
     val GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY")
-            ?: throw InitialisationException("no Google API key available")
+            ?: throw InitialisationException("no Google API key defined")
 
     const val INSPIROQUOTE_API_KEY_HEADER = "x-inspiroquote-apikey"
     private val logger = Logger("app")
@@ -35,6 +37,8 @@ object App {
 
         logger.info("setting up API key filter")
         apiKeyFilter()
+        logger.info("setting up authorization filter")
+        authorizationFilter()
         logger.info("setting up logging filters")
         loggingFilters()
         logger.info("setting up exception filter")
