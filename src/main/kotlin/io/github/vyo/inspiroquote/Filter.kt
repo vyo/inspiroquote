@@ -1,6 +1,5 @@
 package io.github.vyo.inspiroquote
 
-import io.github.vyo.twig.logger.Logger
 import spark.Filter
 import spark.Request
 import spark.Response
@@ -11,7 +10,7 @@ import spark.Spark.*
  *
  * Created by Manuel Weidmann <manuel.weidmann@7p-group.com> on 30.01.18.
  */
-private val logger = Logger("filter")
+private val logger = get("filter")
 private const val AUTH_HEADER_NAME = "Authorization"
 private const val TOKEN_PREFIX = "Bearer "
 

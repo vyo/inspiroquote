@@ -1,6 +1,6 @@
-package io.github.vyo.inspiroquote
+package io.github.vyo.inspiroquote.endpoint
 
-import io.github.vyo.twig.logger.Logger
+import io.github.vyo.inspiroquote.*
 import spark.Spark.get
 import spark.Spark.halt
 
@@ -10,7 +10,7 @@ import spark.Spark.halt
  * Created by Manuel Weidmann <manuel.weidmann@7p-group.com> on 30.01.18.
  */
 
-private val logger = Logger("endpoint")
+private val logger = get("inspiration")
 
 data class InspiroQuote(val quote: String, val id: String)
 
@@ -31,7 +31,7 @@ fun inspiration() {
                 logger.info("translated quote", Pair("id", imageID), Pair("text", translation))
                 return@get InspiroQuote(translation, imageID)
             }
-            else -> halt(400, "unsupported target language $language}")
+            else -> halt(400, "unsupported target language $language")
         }
     }, { it -> toJSON(it) })
 }

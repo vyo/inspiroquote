@@ -1,6 +1,8 @@
 package io.github.vyo.inspiroquote
 
-import io.github.vyo.twig.logger.Logger
+import io.github.vyo.inspiroquote.endpoint.getLoggerInfo
+import io.github.vyo.inspiroquote.endpoint.inspiration
+import io.github.vyo.inspiroquote.endpoint.setLogLevel
 import spark.Spark.port
 
 /**
@@ -21,7 +23,7 @@ object App {
             ?: throw InitialisationException("no Google API key defined")
 
     const val INSPIROQUOTE_API_KEY_HEADER = "x-inspiroquote-apikey"
-    private val logger = Logger("app")
+    private val logger = get("app")
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -46,6 +48,10 @@ object App {
 
         logger.info("setting up inspiration endpoint")
         inspiration()
+
+        logger.info("setting up admin endpoints")
+        getLoggerInfo()
+        setLogLevel()
 
         logger.info("startup complete")
     }

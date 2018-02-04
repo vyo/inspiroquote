@@ -1,7 +1,6 @@
 package io.github.vyo.inspiroquote
 
 import com.mashape.unirest.http.Unirest
-import io.github.vyo.twig.logger.Logger
 import spark.Spark.halt
 
 /**
@@ -26,7 +25,7 @@ data class CloudVisionResponsePayload(val responses: List<CloudVisionDocumentTex
 
 data class CloudVisionErrorResponse(val code: Int, val message: String)
 
-private val logger = Logger("cloudplatform")
+private val logger = get("cloudplatform")
 
 fun extractText(base64Image: String, apiKey: String): String {
     val cloudPlatformPayload = toJSON(

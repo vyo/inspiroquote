@@ -2,7 +2,6 @@ package io.github.vyo.inspiroquote;
 
 import com.mashape.unirest.http.Unirest
 import com.mashape.unirest.http.utils.Base64Coder
-import io.github.vyo.twig.logger.Logger
 import java.io.ByteArrayOutputStream
 import java.net.URL
 
@@ -14,7 +13,7 @@ import java.net.URL
  * Created by Manuel Weidmann <manuel.weidmann@7p-group.com> on 30.01.18.
  */
 
-private val logger = Logger("inspirobot")
+private val logger = get("inspirobot")
 
 fun retrieveQuoteImage(): Pair<String, String> {
     val imageURL = Unirest.get("http://inspirobot.me/api?generate=true")
